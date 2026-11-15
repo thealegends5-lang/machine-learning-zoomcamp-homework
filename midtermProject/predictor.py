@@ -1,4 +1,6 @@
-"""Prediction logic (no web framework needed). Used by app.py."""
+# predictor.py
+# Loads the saved model and makes predictions. app.py uses this.
+
 import os
 
 import joblib
@@ -11,14 +13,16 @@ class Predictor:
         if not os.path.exists(path):
             raise FileNotFoundError(
                 f"{path} not found. Run 'python train.py --data diabetes.csv' first.")
-        bundle = joblib.load(path)
-        self.model = bundle["model"]
-        self.threshold = bundle["threshold"]
-        # e.g. {'gender=male', 'gender=female', 'frame=small', ...}
-        self.known_categories = {
-            n for n in self.model.named_steps["dv"].vocabulary_ if "=" in n}
 
-    def predict(self, raw: dict) -> dict:
+        saved = joblib.load(path)
+        self.model = saved["model"]
+        self.threshold = saved["threshold"]
+
+        # categories the model saw in training, like "gender=male", "frame=small"
+        self.known_categories = {
+            name for name in self.model.named_steps["dv"].vocabulary_ if "=" in name}
+
+    def predict(self, raw):
         missing = [k for k in RAW_FEATURES if is_missing(raw.get(k))]
         warnings = []
 
@@ -28,14 +32,18 @@ class Predictor:
         if len(missing) > len(RAW_FEATURES) // 3:
             warnings.append("Many fields are missing, so this result is less reliable.")
 
+        # warn if a category value was never seen in training
         for c in CATEGORICAL:
             v = raw.get(c)
-            if not is_missing(v) and f"{c}={str(v).strip().lower()}" not in self.known_categories:
+            if is_missing(v):
+                continue
+            if f"{c}={str(v).strip().lower()}" not in self.known_categories:
                 warnings.append(f"Unknown value {v!r} for '{c}' was ignored.")
 
-        record = build_record(raw)          # raises ValueError on non-numeric input
+        record = build_record(raw)  # raises ValueError if a number is not a number
         proba = float(self.model.predict_proba([record])[0, 1])
         pred = int(proba >= self.threshold)
+
         return {
             "probability_diabetic": round(proba, 4),
             "threshold": round(self.threshold, 4),

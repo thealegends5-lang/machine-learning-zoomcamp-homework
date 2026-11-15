@@ -1,11 +1,12 @@
-"""FastAPI service for the diabetes screening model.
+# app.py
+# FastAPI service for the diabetes screening model.
+#
+#   uvicorn app:app --reload      (run train.py first)
+#   docs page: http://localhost:8000/docs
+#
+# All fields are optional. A missing field is ignored and shows up
+# in "missing_fields" and "warnings" in the response.
 
-Run:   uvicorn app:app --reload          (after python train.py)
-Docs:  http://localhost:8000/docs        (interactive page to try /predict)
-
-Missing fields are allowed: they are ignored (numeric -> training median,
-categorical -> no category) and listed in "missing_fields" / "warnings".
-"""
 import json
 import os
 from typing import List, Optional
@@ -23,9 +24,10 @@ app = FastAPI(title="Diabetes screening API", version="1.0")
 
 
 class Patient(BaseModel):
-    """All fields optional. Units: height/waist/hip in inches, weight in pounds."""
+    # units: height/waist/hip in inches, weight in pounds
     model_config = ConfigDict(
-        extra="ignore", populate_by_name=True,
+        extra="ignore",
+        populate_by_name=True,
         json_schema_extra={"example": {
             "age": 55, "gender": "male", "height": 68, "weight": 210,
             "waist": 42, "hip": 40, "frame": "large", "bp.1s": 140, "bp.1d": 90,
@@ -57,13 +59,14 @@ class Prediction(BaseModel):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "threshold": round(predictor.threshold, 4),
+    return {"status": "ok",
+            "threshold": round(predictor.threshold, 4),
             "features": RAW_FEATURES}
 
 
 @app.get("/samples")
 def samples():
-    """2 test + 2 train examples saved by train.py (with the true label)."""
+    # 2 test + 2 train examples that train.py saved, with their true labels
     with open(os.path.join(HERE, "samples.json")) as f:
         return json.load(f)
 

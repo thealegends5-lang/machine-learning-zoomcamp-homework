@@ -1,10 +1,7 @@
-"""Shared feature definitions, used by train.py, predictor.py and app.py so that
-training and serving build exactly the same features.
+# features.py
+# Feature building. train.py and the API both use this file,
+# so the model sees the same features in training and in serving.
 
-Records are plain dicts fed to DictVectorizer:
-  * numeric field missing  -> NaN   (the pipeline's imputer then fills the training median)
-  * categorical missing    -> key left out (all one-hot columns are 0 = "ignored")
-"""
 import math
 
 import pandas as pd
@@ -17,7 +14,7 @@ CATEGORICAL = ["gender", "frame"]
 RAW_FEATURES = NUMERICAL + CATEGORICAL
 ENGINEERED = ["BMI", "waist_hip", "whtr"]
 
-# Units of the dataset: height in inches, weight in pounds, waist/hip in inches.
+# units: height, waist, hip in inches / weight in pounds
 
 NAN = float("nan")
 
@@ -43,16 +40,22 @@ def _num(raw, key):
         raise ValueError(f"'{key}' must be a number, got {v!r}")
 
 
-def build_record(raw: dict) -> dict:
-    """raw dict (any subset of RAW_FEATURES, None/NaN allowed) -> dict for DictVectorizer."""
+def _ok(x):
+    return not math.isnan(x) and x > 0
+
+
+def build_record(raw):
+    # raw dict (can have any of the raw features) -> dict for DictVectorizer
+    # missing numbers become NaN, the imputer fills them later with the train median
     rec = {k: _num(raw, k) for k in NUMERICAL}
 
     h, w, waist, hip = rec["height"], rec["weight"], rec["waist"], rec["hip"]
-    ok = lambda x: not math.isnan(x) and x > 0
-    rec["BMI"] = (w * 703) / (h ** 2) if ok(h) and not math.isnan(w) else NAN
-    rec["waist_hip"] = waist / hip if ok(hip) and not math.isnan(waist) else NAN
-    rec["whtr"] = waist / (h + 1e-5) if ok(h) and not math.isnan(waist) else NAN
 
+    rec["BMI"] = (w * 703) / (h ** 2) if _ok(h) and not math.isnan(w) else NAN
+    rec["waist_hip"] = waist / hip if _ok(hip) and not math.isnan(waist) else NAN
+    rec["whtr"] = waist / (h + 1e-5) if _ok(h) and not math.isnan(waist) else NAN
+
+    # categorical: if it's missing we just leave the key out (all one-hot = 0)
     for k in CATEGORICAL:
         v = raw.get(k)
         if not is_missing(v):
@@ -60,6 +63,6 @@ def build_record(raw: dict) -> dict:
     return rec
 
 
-def build_records(df: pd.DataFrame) -> list:
+def build_records(df):
     cols = [c for c in RAW_FEATURES if c in df.columns]
     return [build_record(r) for r in df[cols].to_dict(orient="records")]
