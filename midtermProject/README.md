@@ -182,3 +182,25 @@ The final metrics are printed by `train.py` and saved in `metrics.json`.
 - I chose FastAPI over Flask because I prefer it (it also gives automatic request validation and the interactive `/docs` page).
 - Canva AI was used to improve the look of the website for this API, including the layout and the animations.
 - AI was used to help improve this README.
+
+
+
+## Use the API
+
+- python train.py --data diabetes.csv
+-uvicorn app:app --reload
+-
+http://localhost:8000/docs
+
+## can ulso use 
+
+- python train.py --data diabetes.csv
+-uvicorn app:app --reload
+
+curl http://localhost:8000/health
+
+curl http://localhost:8000/samples
+
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"age":55,"gender":"male","height":68,"weight":210,"waist":42,"hip":40,"frame":"large","bp.1s":140,"bp.1d":90,"chol":220,"hdl":38,"ratio":5.8}'
