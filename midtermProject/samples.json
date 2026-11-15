@@ -1,0 +1,78 @@
+[
+  {
+    "source": "test",
+    "true_label": 1,
+    "features": {
+      "chol": 254.0,
+      "hdl": 37.0,
+      "ratio": 6.9000000954,
+      "age": 75.0,
+      "height": 68.0,
+      "weight": 210.0,
+      "bp.1s": 151.0,
+      "bp.1d": 87.0,
+      "waist": 44.0,
+      "hip": 45.0,
+      "time.ppn": 15.0,
+      "gender": "male",
+      "frame": "large"
+    }
+  },
+  {
+    "source": "test",
+    "true_label": 0,
+    "features": {
+      "chol": 151.0,
+      "hdl": 47.0,
+      "ratio": 3.2000000477,
+      "age": 28.0,
+      "height": 69.0,
+      "weight": 130.0,
+      "bp.1s": 135.0,
+      "bp.1d": 75.0,
+      "waist": 29.0,
+      "hip": 35.0,
+      "time.ppn": 720.0,
+      "gender": "male",
+      "frame": "small"
+    }
+  },
+  {
+    "source": "train",
+    "true_label": 1,
+    "features": {
+      "chol": 199.0,
+      "hdl": 77.0,
+      "ratio": 2.5999999046,
+      "age": 36.0,
+      "height": 66.0,
+      "weight": 255.0,
+      "bp.1s": 118.0,
+      "bp.1d": 66.0,
+      "waist": 47.0,
+      "hip": 52.0,
+      "time.ppn": 360.0,
+      "gender": "female",
+      "frame": "large"
+    }
+  },
+  {
+    "source": "train",
+    "true_label": 0,
+    "features": {
+      "chol": 240.0,
+      "hdl": 57.0,
+      "ratio": 4.1999998093,
+      "age": 54.0,
+      "height": 65.0,
+      "weight": 175.0,
+      "bp.1s": 152.0,
+      "bp.1d": 100.0,
+      "waist": 37.0,
+      "hip": 43.0,
+      "time.ppn": 60.0,
+      "gender": "female",
+      "frame": "medium"
+    }
+  }
+]

@@ -1,0 +1,82 @@
+{
+  "best_params": {
+    "clf__C": "0.03",
+    "clf__class_weight": "balanced",
+    "clf__solver": "liblinear"
+  },
+  "threshold_rule": "max precision with recall >= 0.85",
+  "train_out_of_fold_default_0.5": {
+    "threshold": 0.5,
+    "confusion_matrix": [
+      [
+        169,
+        79
+      ],
+      [
+        21,
+        43
+      ]
+    ],
+    "accuracy": 0.6795,
+    "precision": 0.3525,
+    "recall": 0.6719,
+    "f1": 0.4624,
+    "f2": 0.5688
+  },
+  "train_out_of_fold_chosen": {
+    "threshold": 0.3208,
+    "confusion_matrix": [
+      [
+        87,
+        161
+      ],
+      [
+        7,
+        57
+      ]
+    ],
+    "accuracy": 0.4615,
+    "precision": 0.2615,
+    "recall": 0.8906,
+    "f1": 0.4043,
+    "f2": 0.6013
+  },
+  "test_default_0.5": {
+    "threshold": 0.5,
+    "confusion_matrix": [
+      [
+        40,
+        22
+      ],
+      [
+        5,
+        11
+      ]
+    ],
+    "accuracy": 0.6538,
+    "precision": 0.3333,
+    "recall": 0.6875,
+    "f1": 0.449,
+    "f2": 0.567
+  },
+  "test_chosen": {
+    "threshold": 0.3208,
+    "confusion_matrix": [
+      [
+        24,
+        38
+      ],
+      [
+        0,
+        16
+      ]
+    ],
+    "accuracy": 0.5128,
+    "precision": 0.2963,
+    "recall": 1.0,
+    "f1": 0.4571,
+    "f2": 0.678
+  },
+  "test_roc_auc": 0.7984,
+  "test_pr_auc": 0.5475
+}
